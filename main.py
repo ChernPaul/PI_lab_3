@@ -61,19 +61,6 @@ def border_processing(img_as_arrays):
     return new_img
 
 
-def create_wb_histogram_plot(img_as_arrays):
-    hist, bins = np.histogram(img_as_arrays.flatten(), 256, [0, 256])
-    plt.plot(bins[:-1], hist, color='blue', linestyle='-', linewidth=1)
-
-
-def open_image_as_arrays(filepath):
-    return imread(filepath)
-
-
-def save_image(img, directory):
-    imsave(directory, img)
-
-
 def create_chess_field_image():
     img = np.ones((IMAGE_LENGTH, IMAGE_HEIGHT)).astype(int)
     line_index = 0
@@ -190,13 +177,6 @@ def create_figure_of_median_filter_processing_imp(imp_noise, img_imp_noise, line
     imshow(linear_filtered_img, cmap='gray', vmin=0, vmax=255)
     return fig
 
-def check_and_correct_limits(img_as_arrays):
-    shape = np.shape(img_as_arrays)
-    new_img_list = list(map(correct_limits_function, np.reshape(img_as_arrays, img_as_arrays.size)))
-    single_dimension_array = np.array(new_img_list)
-    new_img = np.reshape(single_dimension_array, (shape[0], shape[1]))
-    return new_img
-
 
 def correct_limits_function(element_value):
     if element_value < MIN_BRIGHTNESS_VALUE:
@@ -204,6 +184,14 @@ def correct_limits_function(element_value):
     if element_value > MAX_BRIGHTNESS_VALUE:
         return MAX_BRIGHTNESS_VALUE
     return element_value
+
+
+def check_and_correct_limits(img_as_arrays):
+    shape = np.shape(img_as_arrays)
+    new_img_list = list(map(correct_limits_function, np.reshape(img_as_arrays, img_as_arrays.size)))
+    single_dimension_array = np.array(new_img_list)
+    new_img = np.reshape(single_dimension_array, (shape[0], shape[1]))
+    return new_img
 
 
 def coefficient_of_decreasing_noise(src_img, img_and_noise, filtered_img):
@@ -304,12 +292,6 @@ img_with_white_noise_1 = check_and_correct_limits(chess_board_img + white_noise_
 median_filter_img_1 = median_filter(img_with_white_noise_1, footprint=MEDIAN_FILTER_MASK_1)
 linear_filter_img_1 = window_processing(img_with_white_noise_1, LINEAR_FILTER_MASK_A)
 
-
-print("MSE linear filter 1")
-print(middle_square_error_pow_2(chess_board_img, linear_filter_img_1))
-
-print("MSE median filter 1")
-print(middle_square_error_pow_2(chess_board_img, median_filter_img_1))
 
 fig = plt.figure(figsize=(20, 10))
 fig.add_subplot(1, 1, 1)
